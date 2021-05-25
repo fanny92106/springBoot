@@ -52,3 +52,10 @@
                 2). 用户直接修改application.properties属性文件, 这个属性文件会绑定特定的属性bean, 属性bean会被注入到xxxAutoConfiguration组件中, 从而定制xxxAutoConfiguration的行为
 
 ![bridgeBetweenAutoConfigurationAndApplicationProperties](imagePool/bridgeBetweenAutoConfigurationAndApplicationProperties.png)
+
+
+        application.properties中开启自动配置报告 -- 查看所有生效的xxxAutoConfiguration.class
+            debug=true
+    
+![positiveMatchesAutoConfiguration](imagePool/positiveMatchesAutoConfiguration.png)
+![negativeMatchesAutoConfiguration](imagePool/negativeMatchesAutoConfiguration.png)

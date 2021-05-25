@@ -1,7 +1,6 @@
 # Spring Boot
 
 
-
 0. Spring Boot的优点
         
         - 快速构建一个独立的Spring应用程序
@@ -63,6 +62,9 @@
 ![negativeMatchesAutoConfiguration](imagePool/negativeMatchesAutoConfiguration.png)
 
 
+![RoadMap_config](imagePool/RoadMap_config.png)
+
+
 3. 配置绑定 
 
         - 将spring bean的属性值和application.properties/ application.yml的属性值绑定
@@ -78,3 +80,29 @@
 ![PropertyBinding_2_0](imagePool/PropertyBinding_2_0.png)
 ![PropertyBinding_2_1](imagePool/PropertyBinding_2_1.png)
         
+
+![RoadMap_web](imagePool/RoadMap_web.png)
+
+
+4. Web开发
+
+![springboot_web](imagePool/springboot_web.png)
+
+    1). 静态资源访问
+            - 文件夹: /public, /resources, /static, /META-INF/resources
+![StaticResourceFolder](imagePool/StaticResourceFolder.png)
+
+            - 访问: 当前项目根路径/ + 静态资源名
+            - 原理: 请求进来, 先去找controller看能不能处理, 如果不能处理, 再交给静态资源处理器, 
+                    如果静态资源处理器也找不到就返回404
+            - 设置静态资源访问路径前缀: 
+                - default没有, /**
+                - spring.mvc.static-path-pattern: /res/**
+![setStaticPathPattern](imagePool/setStaticPathPattern.png)
+
+            - 设置额外的静态资源文件夹:
+                - spring.resources.static-locations: classpath:/haha
+![setStaticResourceFolder](imagePool/setStaticResourceFolder.png)
+
+
+            

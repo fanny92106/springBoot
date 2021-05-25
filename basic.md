@@ -41,8 +41,12 @@
                             2). deduplicate configurations
                             3). exclude configurations
                             4). filter configurations
+                            
+![bridgeBetweenAutoConfigurationAndApplicationProperties](imagePool/bridgeBetweenAutoConfigurationAndApplicationProperties.png)
+
+![AutoConfigPropertyBinding](imagePool/AutoConfigPropertyBinding.png)
         
-        总结: 
+        自动配置总结: 
             - SpringBoot先加载所有的自动配置类 xxxAutoConfiguration
             - 每个自动配置类按照条件进行生效, 默认都会绑定一个属性bean -- xxxProperties.class, 这个属性bean会绑定属性文件(application.properties)并指定一个prefix用于配置这个属性bean
             - 生效的配置类会给容器中装配很多组件
@@ -51,11 +55,26 @@
                 1). 用户直接自己@Bean替换底层的组件, 底层xxxAutoConfiguration文件中的@ConditionalOnMissingBean注解生效
                 2). 用户直接修改application.properties属性文件, 这个属性文件会绑定特定的属性bean, 属性bean会被注入到xxxAutoConfiguration组件中, 从而定制xxxAutoConfiguration的行为
 
-![bridgeBetweenAutoConfigurationAndApplicationProperties](imagePool/bridgeBetweenAutoConfigurationAndApplicationProperties.png)
 
-
-        application.properties中开启自动配置报告 -- 查看所有生效的xxxAutoConfiguration.class
-            debug=true
+            - application.properties中开启自动配置报告 -- 查看所有生效的xxxAutoConfiguration.class
+                debug=true
     
 ![positiveMatchesAutoConfiguration](imagePool/positiveMatchesAutoConfiguration.png)
 ![negativeMatchesAutoConfiguration](imagePool/negativeMatchesAutoConfiguration.png)
+
+
+3. 配置绑定 
+
+        - 将spring bean的属性值和application.properties/ application.yml的属性值绑定
+        
+![propertyBinding](imagePool/propertyBinding.png)
+
+       - 实现方式一: @ConfigurationProperties + @Component
+       
+![PropertyBindingImpl_1](imagePool/PropertyBindingImpl_1.png)
+
+       - 实现方式二:
+
+![PropertyBinding_2_0](imagePool/PropertyBinding_2_0.png)
+![PropertyBinding_2_1](imagePool/PropertyBinding_2_1.png)
+        

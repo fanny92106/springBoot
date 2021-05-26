@@ -105,4 +105,16 @@
 ![setStaticResourceFolder](imagePool/setStaticResourceFolder.png)
 
 
+    2). DispatcherServlet 派发请求源码
+    DispatcherServlet:
+        doService(req, res):
+            doDispatch(req, res):
+                getHandler(processedRequest) ===> HandlerExecutionChain
+                    handlerMappings: 中的mappingRegistry保存了@RequestMapping和handler的映射关系
+                    
+![HandlerMappigns](imagePool/HandlerMappigns.png)
+                    
+                        遍历每一个handlerMapping.getHandler(request), 如果找到匹配的(HandlerExecutionChain)handler就返回
+
+![HandlerMappingsInternal](imagePool/HandlerMappingsInternal.png)
             

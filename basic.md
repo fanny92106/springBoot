@@ -117,4 +117,10 @@
                         遍历每一个handlerMapping.getHandler(request), 如果找到匹配的(HandlerExecutionChain)handler就返回
 
 ![HandlerMappingsInternal](imagePool/HandlerMappingsInternal.png)
+
+    3). @RequestAttribute
+            - 将数据存放在request域中, 转发到的请求可以取出数据
+
+![RequestAttribute](imagePool/RequestAttribute.png)
+    
             

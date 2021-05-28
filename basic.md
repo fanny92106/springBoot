@@ -123,4 +123,10 @@
 
 ![RequestAttribute](imagePool/RequestAttribute.png)
     
-            
+    4). @MatrixVariable
+            - ; to saperate url path and parameters
+
+![CustomizeWebMvcConfigurerPathMatch](imagePool/CustomizeWebMvcConfigurerPathMatch.png)
+![CustomizeWebMvcConfigurerPathMatch_2](imagePool/CustomizeWebMvcConfigurerPathMatch_2.png)
+![MatrixVariableAnnotation](imagePool/MatrixVariableAnnotation.png)
+

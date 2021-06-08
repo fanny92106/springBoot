@@ -11,14 +11,14 @@
         - 提供生产就绪型功能, 如指标, 健康检查和外部配置
         - 主要是被微服务需求带动起来 (spring cloud是微服务, 而spring cloud是基于spring boot开发的), 可以说spring cloud带动了spring boot, 而spring boot成就了spring cloud
         
-![springFrameworkSpringBootSpringCloud](imagePool/springFrameworkSpringBootSpringCloud.png)
+![springFrameworkSpringBootSpringCloud](image/springFrameworkSpringBootSpringCloud.png)
 
 
 1. basic start
 
-![springBootPom](imagePool/springBootPom.png)
+![springBootPom](image/springBootPom.png)
 
-![springBootMainClass](imagePool/springBootMainClass.png)
+![springBootMainClass](image/springBootMainClass.png)
 
 
 2. SpringBoot AutoConfiguration 源码
@@ -41,9 +41,9 @@
                             3). exclude configurations
                             4). filter configurations
                             
-![bridgeBetweenAutoConfigurationAndApplicationProperties](imagePool/bridgeBetweenAutoConfigurationAndApplicationProperties.png)
+![bridgeBetweenAutoConfigurationAndApplicationProperties](image/bridgeBetweenAutoConfigurationAndApplicationProperties.png)
 
-![AutoConfigPropertyBinding](imagePool/AutoConfigPropertyBinding.png)
+![AutoConfigPropertyBinding](image/AutoConfigPropertyBinding.png)
         
         自动配置总结: 
             - SpringBoot先加载所有的自动配置类 xxxAutoConfiguration
@@ -58,39 +58,39 @@
             - application.properties中开启自动配置报告 -- 查看所有生效的xxxAutoConfiguration.class
                 debug=true
     
-![positiveMatchesAutoConfiguration](imagePool/positiveMatchesAutoConfiguration.png)
-![negativeMatchesAutoConfiguration](imagePool/negativeMatchesAutoConfiguration.png)
+![positiveMatchesAutoConfiguration](image/positiveMatchesAutoConfiguration.png)
+![negativeMatchesAutoConfiguration](image/negativeMatchesAutoConfiguration.png)
 
 
-![RoadMap_config](imagePool/RoadMap_config.png)
+![RoadMap_config](image/RoadMap_config.png)
 
 
 3. 配置绑定 
 
         - 将spring bean的属性值和application.properties/ application.yml的属性值绑定
         
-![propertyBinding](imagePool/propertyBinding.png)
+![propertyBinding](image/propertyBinding.png)
 
        - 实现方式一: @ConfigurationProperties + @Component
        
-![PropertyBindingImpl_1](imagePool/PropertyBindingImpl_1.png)
+![PropertyBindingImpl_1](image/PropertyBindingImpl_1.png)
 
        - 实现方式二:
 
-![PropertyBinding_2_0](imagePool/PropertyBinding_2_0.png)
-![PropertyBinding_2_1](imagePool/PropertyBinding_2_1.png)
+![PropertyBinding_2_0](image/PropertyBinding_2_0.png)
+![PropertyBinding_2_1](image/PropertyBinding_2_1.png)
         
 
-![RoadMap_web](imagePool/RoadMap_web.png)
+![RoadMap_web](image/RoadMap_web.png)
 
 
 4. Web开发
 
-![springboot_web](imagePool/springboot_web.png)
+![springboot_web](image/springboot_web.png)
 
     1). 静态资源访问
             - 文件夹: /public, /resources, /static, /META-INF/resources
-![StaticResourceFolder](imagePool/StaticResourceFolder.png)
+![StaticResourceFolder](image/StaticResourceFolder.png)
 
             - 访问: 当前项目根路径/ + 静态资源名
             - 原理: 请求进来, 先去找controller看能不能处理, 如果不能处理, 再交给静态资源处理器, 
@@ -98,11 +98,11 @@
             - 设置静态资源访问路径前缀: 
                 - default没有, /**
                 - spring.mvc.static-path-pattern: /res/**
-![setStaticPathPattern](imagePool/setStaticPathPattern.png)
+![setStaticPathPattern](image/setStaticPathPattern.png)
 
             - 设置额外的静态资源文件夹:
                 - spring.resources.static-locations: classpath:/haha
-![setStaticResourceFolder](imagePool/setStaticResourceFolder.png)
+![setStaticResourceFolder](image/setStaticResourceFolder.png)
 
 
     2). DispatcherServlet 派发请求源码
@@ -112,21 +112,50 @@
                 getHandler(processedRequest) ===> HandlerExecutionChain
                     handlerMappings: 中的mappingRegistry保存了@RequestMapping和handler的映射关系
                     
-![HandlerMappigns](imagePool/HandlerMappigns.png)
+![HandlerMappigns](image/HandlerMappigns.png)
                     
                         遍历每一个handlerMapping.getHandler(request), 如果找到匹配的(HandlerExecutionChain)handler就返回
 
-![HandlerMappingsInternal](imagePool/HandlerMappingsInternal.png)
+![HandlerMappingsInternal](image/HandlerMappingsInternal.png)
 
     3). @RequestAttribute
             - 将数据存放在request域中, 转发到的请求可以取出数据
 
-![RequestAttribute](imagePool/RequestAttribute.png)
+![RequestAttribute](image/RequestAttribute.png)
     
     4). @MatrixVariable
             - ; to saperate url path and parameters
 
-![CustomizeWebMvcConfigurerPathMatch](imagePool/CustomizeWebMvcConfigurerPathMatch.png)
-![CustomizeWebMvcConfigurerPathMatch_2](imagePool/CustomizeWebMvcConfigurerPathMatch_2.png)
-![MatrixVariableAnnotation](imagePool/MatrixVariableAnnotation.png)
+![CustomizeWebMvcConfigurerPathMatch](image/CustomizeWebMvcConfigurerPathMatch.png)
+![CustomizeWebMvcConfigurerPathMatch_2](image/CustomizeWebMvcConfigurerPathMatch_2.png)
+![MatrixVariableAnnotation](image/MatrixVariableAnnotation.png)
 
+
+    5). 参数解析原理
+            - 自定义对象参数绑定原理 (ServletModelAttribute)
+            - 自定义converter进行类型转换
+    
+    DispatcherServlet.doDispatch():
+        1>. mappendHandler = getHandler();
+        2>. ha = getHandlerAdapter(); 查找匹配的处理器适配器
+                遍历所有的HandlerAdapter, 如果支持handler(supports(handler)), 则返回那个adapter
+                此处返回的是: RequestMappingHandlerAdapter
+        3>. mv = ha.handle(request, response, handler); 执行目标方法
+                    ha.handleInternal(req, res, handler);
+                        ha.invokeHandlerMethod(req, res, handler);
+                            invocableMethod.setHandlerMethodArgumentResolver (27个argumentResolvers) 设置参数解析器
+                            invocableMethod.setHandlerMethodReturnValueHandlers (15个returnValueHandlers)
+                            invokeForRequest(request, mavContainer, providedArgs) -- 真正为参数赋值
+                                getMethodArgumentValues(request, mavContainer, providedArgs)
+                                    #1. MethodParameter[] parameters = getMethodParameters(); 拿到所有方法参数
+                                    #2. 为每一个参数找到支持解析它的ArgumentResolver
+                                            遍历所有MethodParameters: 
+                                                遍历所有的ArgumentResolvers:
+                                                    if(某个argumentResolver支持解析这个MethodParameter):
+                                                        返回这个argumentResolver;
+                                                报出没有找到合适的参数解析器异常;
+                                                
+                                            resolver.resolveArgument(); 参数解析器来解析参数
+                                            根据参数的key, 从requestAttribute(request作用域)中拿到参数的值, 并赋给参数位置指定变量
+                                            
+![ResolveArguments](image/ResolveArguments.png)

@@ -131,7 +131,7 @@
 ![MatrixVariableAnnotation](image/MatrixVariableAnnotation.png)
 
 
-    5). 参数解析原理
+    5). ArgumentResolver 参数解析器原理
             - 自定义对象参数绑定原理 (ServletModelAttribute)
             - 自定义converter进行类型转换
     
@@ -159,3 +159,22 @@
                                             根据参数的key, 从requestAttribute(request作用域)中拿到参数的值, 并赋给参数位置指定变量
                                             
 ![ResolveArguments](image/ResolveArguments.png)
+
+
+    6). ReturnValueHandler 返回值处理器原理 | HTTPMessageConverter 消息转换器原理 | ContentNegotiation 内容协商原理
+        
+        1. ReturnValueHandler 返回值处理器原理:
+        
+            a. 如果有返回值, 触发返回值处理机制
+            b. 遍历所有的returnValueHandlers, 找到支持返回值类型的returnValueHandler, handler.supportsReturnType(returnType)
+            c. returnValueHanlder调用handleReturnValue()方法进行返回值处理:
+                    #0. 调用writeWithMessageConverters(returnValue, returnType, inputMessage, outputMessage)方法 -- 使用消息转换器将返回值数据写为JSON
+                            - MediaType内容协商: 浏览器以请求头的方式告诉服务器它可以接受什么内容类型, 以及权重 (xml权重 > JSON权重), 并最终选出一个最合适的MediaType -- selectedMediaType, 详见2.内容协商原理
+                            - 遍历所有HttpMessageConverters, 找到可以处理将返回值类型转化成选定媒体类型的messageConverter, 通过调用canWrite(clazz, selectedMediaType)方法, eg: MappingJackon2HttpMessageConverter可以将任何数据类型转成JSON
+
+![MessageConverters](image/MessageConverters.png)
+                        
+                            - 选定的MessageConverter进行转换, 将返回的媒体类型数据flush()给response对象
+                        
+
+

@@ -169,12 +169,46 @@
             b. 遍历所有的returnValueHandlers, 找到支持返回值类型的returnValueHandler, handler.supportsReturnType(returnType)
             c. returnValueHanlder调用handleReturnValue()方法进行返回值处理:
                     #0. 调用writeWithMessageConverters(returnValue, returnType, inputMessage, outputMessage)方法 -- 使用消息转换器将返回值数据写为JSON
-                            - MediaType内容协商: 浏览器以请求头的方式告诉服务器它可以接受什么内容类型, 以及权重 (xml权重 > JSON权重), 并最终选出一个最合适的MediaType -- selectedMediaType, 详见2.内容协商原理
-                            - 遍历所有HttpMessageConverters, 找到可以处理将返回值类型转化成选定媒体类型的messageConverter, 通过调用canWrite(clazz, selectedMediaType)方法, eg: MappingJackon2HttpMessageConverter可以将任何数据类型转成JSON
+                            - MediaType内容协商: 浏览器以请求头的方式告诉服务器它可以接受什么内容类型, 以及权重 (xml权重 > JSON权重), 服务器遍历所有MessageConverters, 找到所有能操作返回值类型的MessageConverters, 汇总他们可以提供的所有媒体类型, 并最终选出一个最合适的MediaType -- selectedMediaType, 详见2.内容协商原理
+                            - 又遍历所有HttpMessageConverters, 找到可以处理将返回值类型转化成选定媒体类型的messageConverter, 通过调用canWrite(clazz, selectedMediaType)方法, eg: MappingJackon2HttpMessageConverter可以将任何数据类型转成JSON
 
 ![MessageConverters](image/MessageConverters.png)
                         
                             - 选定的MessageConverter进行转换, 将返回的媒体类型数据flush()给response对象
                         
+                        
+        2. ContentNegotiation 内容协商原理 （Http协议规定, 请求头的Accept属性可以指定客户端支持接收的MediaType)
+            
+            a. 判断当前响应头中是否已经有确定的媒体类型
+            b. 获取客户端支持的媒体类型(Postman, browser) -- 请求头的Accept字段 -- 赋值给acceptableTypes
+                    - 开启支持参数内容协商策略
+                    
+![TurnOnParameterContentNegotiationStrategy](image/TurnOnParameterContentNegotiationStrategy.png)
 
+                    - 发送请求, 附加参数 ?format=xxx
+![FormatParameterForMediaType](image/FormatParameterForMediaType.png)
+                    
+                    - contentNegotiationManager.resolveMediaTypes(request)
+![ResolveMediaTypesUsingContentNegotiationStrategies](image/ResolveMediaTypesUsingContentNegotiationStrategies.png)
+
+                        - 遍历所有的内容协商strategies(默认使用HeaderContentNegotiationStrategy), ParameterContentNegotiationStrategy 优先于 HeaderContentNegotiationStrategy
+![TwoContentNegotiationTypes](image/TwoContentNegotiationTypes.png)
+                                            
+                            调用strategy.resolveMediaTypes(request):
+                                - ParameterContentNegotiationStrategy
+                                    获取“format"属性的值
+![GetMediaTypeParameterName](image/GetMediaTypeParameterName.png)
+
+![ParameterContentNegotiationStrategyParameter](image/ParameterContentNegotiationStrategyParameter.png)
+                                    
+                                - HeaderContentNegotiationStrategy: 
+                                    获取HttpHeader.ACCEPT属性值
+                                
+            c. 遍历循环所有的MessageConverters, 找到支持操作(写)返回值对象类型的MessageConverter -- 将所有可以转化成的MediaType, 并赋值给producibleTypes
+            d. 匹配所有可以的MediaTypes, 将匹配的MediaType并赋值给mediaTypesToUse
+                
+![MediaTypeMatching](imagePool/MediaTypeMatching.png)
+
+            e. 选择匹配度最高的MediaType, 赋值给selectedMediaType (唯一)
+            g. 遍历所有的MessageConverters, 用canWrite(returnType, MediaType)的messageConverter (MappingJackon2HttpMessageConverter) 进行写操作给response
 

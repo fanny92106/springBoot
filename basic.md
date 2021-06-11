@@ -220,3 +220,11 @@
 ![CustomizeMessageConverter](image/CustomizeMessageConverter.png)
 
 ![ExtendSystemMessageConverters](image/ExtendSystemMessageConverters.png)
+
+
+    7). Interceptor 拦截器
+        
+![LoginInterceptor](image/LoginInterceptor.png)
+
+![ConfigInterceptRule](image/ConfigInterceptRule.png)
+

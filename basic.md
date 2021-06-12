@@ -248,3 +248,24 @@
 
         #4. 自定义HandlerExceptionResolver 实现HandlerExceptionResolver接口, 
             执行匹配时, 优先级最低, 可指定@Order执行顺序
+            
+            
+    9). Web原生组件注入(Servlet, Filter, Listener)
+        
+        #1. 使用基于注解的Servlet API
+        
+![ServletComponentScan](image/ServletComponentScan.png)
+
+        !!原生Servlet不会被spring拦截器拦截, 因为根据精确匹配原则, 这个请求不会被DispatcherServlet派发, 
+        而是被原生servlet直接处理, 因此不会触发spring那些拦截器工作
+![WebServlet](image/WebServlet.png)
+
+![WebFilter](image/WebFilter.png)
+
+![WebListener](image/WebListener.png)
+        
+        #2. 使用RegistrationBean
+        
+![ServletComponentDir](image/ServletComponentDir.png)
+
+![ServletRegistrationBean](image/ServletRegistrationBean.png)

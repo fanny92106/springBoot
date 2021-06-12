@@ -269,3 +269,8 @@
 ![ServletComponentDir](image/ServletComponentDir.png)
 
 ![ServletRegistrationBean](image/ServletRegistrationBean.png)
+
+
+5. 整合数据库操作
+
+![ORMDatasourceJDBCImplDatabaseRelationship](image/ORMDatasourceJDBCImplDatabaseRelationship.png)

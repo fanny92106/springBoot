@@ -228,3 +228,23 @@
 
 ![ConfigInterceptRule](image/ConfigInterceptRule.png)
 
+    
+    8). 定制错误处理逻辑
+    
+        #1. 自定义错误页
+        
+![ErrorXXX](image/ErrorXXX.png)
+        
+                - 有精确的错误状态码页面就匹配精确, 没有就找4xx.html
+                - 如果都没有就出发whitelabel Error Page
+                
+        #2. @ControllerAdvice + @ExceptionHandler处理异常(非自定义异常)
+        
+![ControllerAdviceExceptionHandler](image/ControllerAdviceExceptionHandler.png)
+        
+        #3. @ResponseStatus 处理自定义异常(定义异常状态码, 异常原因)
+
+![ResponseStatusExceptionHandler](image/ResponseStatusExceptionHandler.png)
+
+        #4. 自定义HandlerExceptionResolver 实现HandlerExceptionResolver接口, 
+            执行匹配时, 优先级最低, 可指定@Order执行顺序
